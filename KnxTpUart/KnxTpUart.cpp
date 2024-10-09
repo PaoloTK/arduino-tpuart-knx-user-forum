@@ -72,15 +72,15 @@ KnxTpUartSerialEventType KnxTpUart::serialEvent() {
     else {
       serialRead();
 #if defined(TPUART_DEBUG)
-      TPUART_DEBUG_PORT.println("Event UNKNOWN");
+      TPUART_DEBUG_PORT.println("Event UNKNOWN_TPUART_EVENT");
 #endif
-      return UNKNOWN;
+      return UNKNOWN_TPUART_EVENT;
     }
   }
 #if defined(TPUART_DEBUG)
-  TPUART_DEBUG_PORT.println("Event UNKNOWN");
+  TPUART_DEBUG_PORT.println("Event UNKNOWN_TPUART_EVENT");
 #endif
-  return UNKNOWN;
+  return UNKNOWN_TPUART_EVENT;
 }
 
 
