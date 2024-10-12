@@ -34,7 +34,7 @@ void KnxTpUart::uartStateRequest() {
   _serialport->write(sendByte);
 }
 
-void KnxTpUart::setIndividualAddress(int area, int line, int member) {
+void KnxTpUart::setIndividualAddress(uint8_t area, uint8_t line, uint8_t member) {
   _source_area = area;
   _source_line = line;
   _source_member = member;
@@ -201,7 +201,7 @@ KnxTelegram* KnxTpUart::getReceivedTelegram() {
 // Command Write
 
 bool KnxTpUart::groupWriteBool(String Address, bool value) {
-  int valueAsInt = 0;
+  uint8_t valueAsInt = 0;
   if (value) {
     valueAsInt = 0b00000001;
   }
@@ -210,8 +210,8 @@ bool KnxTpUart::groupWriteBool(String Address, bool value) {
   return sendMessage();
 }
 
-bool KnxTpUart::groupWrite4BitInt(String Address, int value) {
-  int out_value = 0;
+bool KnxTpUart::groupWrite4BitInt(String Address, uint8_t value) {
+  uint8_t out_value = 0;
   if (value) {
     out_value = value & 0b00001111;
   }
@@ -221,7 +221,7 @@ bool KnxTpUart::groupWrite4BitInt(String Address, int value) {
 }
 
 bool KnxTpUart::groupWrite4BitDim(String Address, bool direction, byte steps) {
-  int value = 0;
+  uint8_t value = 0;
   if (direction || steps) {
     value = (direction << 3) + (steps & 0b00000111);
   }
@@ -230,14 +230,14 @@ bool KnxTpUart::groupWrite4BitDim(String Address, bool direction, byte steps) {
   return sendMessage();
 }
 
-bool KnxTpUart::groupWrite1ByteInt(String Address, int value) {
+bool KnxTpUart::groupWrite1ByteInt(String Address, uint8_t value) {
   createKNXMessageFrame(2, KNX_COMMAND_WRITE, Address, 0);
   _tg->set1ByteIntValue(value);
   _tg->createChecksum();
   return sendMessage();
 }
 
-bool KnxTpUart::groupWrite2ByteInt(String Address, int value) {
+bool KnxTpUart::groupWrite2ByteInt(String Address, uint16_t value) {
   createKNXMessageFrame(2, KNX_COMMAND_WRITE, Address, 0);
   _tg->set2ByteIntValue(value);
   _tg->createChecksum();
@@ -251,14 +251,14 @@ bool KnxTpUart::groupWrite2ByteFloat(String Address, float value) {
   return sendMessage();
 }
 
-bool KnxTpUart::groupWrite3ByteTime(String Address, int weekday, int hour, int minute, int second) {
+bool KnxTpUart::groupWrite3ByteTime(String Address, uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t second) {
   createKNXMessageFrame(2, KNX_COMMAND_WRITE, Address, 0);
   _tg->set3ByteTime(weekday, hour, minute, second);
   _tg->createChecksum();
   return sendMessage();
 }
 
-bool KnxTpUart::groupWrite3ByteDate(String Address, int day, int month, int year) {
+bool KnxTpUart::groupWrite3ByteDate(String Address, uint8_t day, uint8_t month, uint8_t year) {
   createKNXMessageFrame(2, KNX_COMMAND_WRITE, Address, 0);
   _tg->set3ByteDate(day, month, year);
   _tg->createChecksum();
@@ -282,7 +282,7 @@ bool KnxTpUart::groupWrite14ByteText(String Address, String value) {
 // Command Answer
 
 bool KnxTpUart::groupAnswerBool(String Address, bool value) {
-  int valueAsInt = 0;
+  uint8_t valueAsInt = 0;
   if (value) {
     valueAsInt = 0b00000001;
   }

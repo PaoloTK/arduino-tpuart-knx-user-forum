@@ -66,57 +66,57 @@ class KnxTelegram {
     KnxTelegram();
 
     void clear();
-    void setBufferByte(int index, int content);
-    int getBufferByte(int index);
-    void setPayloadLength(int size);
-    int getPayloadLength();
+    void setBufferByte(uint8_t index, uint8_t content);
+    uint8_t getBufferByte(uint8_t index);
+    void setPayloadLength(uint8_t length);
+    uint8_t getPayloadLength();
     void setRepeated(bool repeat);
     bool isRepeated();
     void setPriority(KnxPriorityType prio);
     KnxPriorityType getPriority();
-    void setSourceAddress(int area, int line, int member);
-    int getSourceArea();
-    int getSourceLine();
-    int getSourceMember();
-    void setTargetGroupAddress(int main, int middle, int sub);
-    void setTargetIndividualAddress(int area, int line, int member);
+    void setSourceAddress(uint8_t area, uint8_t line, uint8_t member);
+    uint8_t getSourceArea();
+    uint8_t getSourceLine();
+    uint8_t getSourceMember();
+    void setTargetGroupAddress(uint8_t main, uint8_t middle, uint8_t sub);
+    void setTargetIndividualAddress(uint8_t area, uint8_t line, uint8_t member);
     bool isTargetGroup();
-    int getTargetMainGroup();
-    int getTargetMiddleGroup();
-    int getTargetSubGroup();
-    int getTargetArea();
-    int getTargetLine();
-    int getTargetMember();
-    void setRoutingCounter(int counter);
-    int getRoutingCounter();
+    uint8_t getTargetMainGroup();
+    uint8_t getTargetMiddleGroup();
+    uint8_t getTargetSubGroup();
+    uint8_t getTargetArea();
+    uint8_t getTargetLine();
+    uint8_t getTargetMember();
+    void setRoutingCounter(uint8_t counter);
+    uint8_t getRoutingCounter();
     void setCommand(KnxCommandType command);
     KnxCommandType getCommand();
 
-    void setFirstDataByte(int data);
-    int getFirstDataByte();
+    void setFirstDataByte(uint8_t data);
+    uint8_t getFirstDataByte();
     bool getBool();
 
-    int get4BitIntValue();
+    uint8_t get4BitIntValue();
     bool get4BitDirectionValue();
-    byte get4BitStepsValue();
+    uint8_t get4BitStepsValue();
 
-    void set1ByteIntValue(int value);
-    int get1ByteIntValue();
+    void set1ByteIntValue(uint8_t value);
+    uint8_t get1ByteIntValue();
 
-    void set2ByteIntValue(int value);
-    int get2ByteIntValue();
+    void set2ByteIntValue(uint16_t value);
+    uint8_t get2ByteIntValue();
     void set2ByteFloatValue(float value);
     float get2ByteFloatValue();
 
-    void set3ByteTime(int weekday, int hour, int minute, int second);
-    int get3ByteWeekdayValue();
-    int get3ByteHourValue();
-    int get3ByteMinuteValue();
-    int get3ByteSecondValue();
-    void set3ByteDate(int day, int month, int year);
-    int get3ByteDayValue();
-    int get3ByteMonthValue();
-    int get3ByteYearValue();
+    void set3ByteTime(uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t second);
+    uint8_t get3ByteWeekdayValue();
+    uint8_t get3ByteHourValue();
+    uint8_t get3ByteMinuteValue();
+    uint8_t get3ByteSecondValue();
+    void set3ByteDate(uint8_t day, uint8_t month, uint8_t year);
+    uint8_t get3ByteDayValue();
+    uint8_t get3ByteMonthValue();
+    uint8_t get3ByteYearValue();
 
     void set4ByteFloatValue(float value);
     float get4ByteFloatValue();
@@ -126,18 +126,18 @@ class KnxTelegram {
 
     void createChecksum();
     bool verifyChecksum();
-    int getChecksum();
+    uint8_t getChecksum();
     void print(TPUART_SERIAL_CLASS*);
-    int getTotalLength();
+    uint8_t getTotalLength();
     KnxCommunicationType getCommunicationType();
-    void setCommunicationType(KnxCommunicationType);
-    int getSequenceNumber();
-    void setSequenceNumber(int);
+    void setCommunicationType(KnxCommunicationType type);
+    uint8_t getSequenceNumber();
+    void setSequenceNumber(uint8_t number);
     KnxControlDataType getControlData();
     void setControlData(KnxControlDataType);
   private:
-    int buffer[MAX_KNX_TELEGRAM_SIZE];
-    int calculateChecksum();
+    uint8_t buffer[MAX_KNX_TELEGRAM_SIZE];
+    uint8_t calculateChecksum();
 
 };
 

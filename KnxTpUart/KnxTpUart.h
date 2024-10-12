@@ -51,27 +51,27 @@ class KnxTpUart {
 
 
   public:
-    KnxTpUart(TPUART_SERIAL_CLASS*, String);
+    KnxTpUart(TPUART_SERIAL_CLASS* sport, String address);
     void uartReset();
     void uartStateRequest();
     KnxTpUartSerialEventType serialEvent();
     KnxTelegram* getReceivedTelegram();
 
-    void setIndividualAddress(int, int, int);
+    void setIndividualAddress(uint8_t area, uint8_t line, uint8_t member);
 
     void sendAck();
     void sendNotAddressed();
 
-    bool groupWriteBool(String, bool);
-    bool groupWrite4BitInt(String, int);
-    bool groupWrite4BitDim(String, bool, byte);
-    bool groupWrite1ByteInt(String, int);
-    bool groupWrite2ByteInt(String, int);
-    bool groupWrite2ByteFloat(String, float);
-    bool groupWrite3ByteTime(String, int, int, int, int);
-    bool groupWrite3ByteDate(String, int, int, int);
-    bool groupWrite4ByteFloat(String, float);
-    bool groupWrite14ByteText(String, String);
+    bool groupWriteBool(String Address, bool value);
+    bool groupWrite4BitInt(String Address, uint8_t value);
+    bool groupWrite4BitDim(String Address, bool direction, byte steps);
+    bool groupWrite1ByteInt(String Address, uint8_t value);
+    bool groupWrite2ByteInt(String Address, uint16_t value);
+    bool groupWrite2ByteFloat(String Address, float value);
+    bool groupWrite3ByteTime(String Address, uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t second);
+    bool groupWrite3ByteDate(String Address, uint8_t day, uint8_t month, uint8_t year);
+    bool groupWrite4ByteFloat(String Address, float value);
+    bool groupWrite14ByteText(String Address, String value);
 
     bool groupAnswerBool(String, bool);
     /*
