@@ -127,14 +127,14 @@ class KnxTelegram {
     void createChecksum();
     bool verifyChecksum();
     uint8_t getChecksum();
-    void print(TPUART_SERIAL_CLASS*);
+    void print(TPUART_SERIAL_CLASS* serial);
     uint8_t getTotalLength();
     KnxCommunicationType getCommunicationType();
     void setCommunicationType(KnxCommunicationType type);
     uint8_t getSequenceNumber();
     void setSequenceNumber(uint8_t number);
     KnxControlDataType getControlData();
-    void setControlData(KnxControlDataType);
+    void setControlData(KnxControlDataType cd);
   private:
     uint8_t buffer[MAX_KNX_TELEGRAM_SIZE];
     uint8_t calculateChecksum();

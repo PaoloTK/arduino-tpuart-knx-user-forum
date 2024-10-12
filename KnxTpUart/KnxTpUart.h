@@ -73,51 +73,47 @@ class KnxTpUart {
     bool groupWrite4ByteFloat(String Address, float value);
     bool groupWrite14ByteText(String Address, String value);
 
-    bool groupAnswerBool(String, bool);
-    /*
-      bool groupAnswer4BitInt(String, int);
-      bool groupAnswer4BitDim(String, bool, byte);
-    */
-    bool groupAnswer1ByteInt(String, int);
-    bool groupAnswer2ByteInt(String, int);
-    bool groupAnswer2ByteFloat(String, float);
-    bool groupAnswer3ByteTime(String, int, int, int, int);
-    bool groupAnswer3ByteDate(String, int, int, int);
-    bool groupAnswer4ByteFloat(String, float);
-    bool groupAnswer14ByteText(String, String);
+    bool groupAnswerBool(String Address, bool value);
+    bool groupAnswer1ByteInt(String Address, uint8_t value);
+    bool groupAnswer2ByteInt(String Address, uint16_t value);
+    bool groupAnswer2ByteFloat(String Address, float value);
+    bool groupAnswer3ByteTime(String Address, uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t second);
+    bool groupAnswer3ByteDate(String Address, uint8_t day, uint8_t month, uint8_t year);
+    bool groupAnswer4ByteFloat(String Address, float value);
+    bool groupAnswer14ByteText(String Address, String value);
 
-    bool groupRead(String);
+    bool groupRead(String Address);
 
-    void addListenGroupAddress(String);
-    bool isListeningToGroupAddress(int, int, int);
+    void addListenGroupAddress(String address);
+    bool isListeningToGroupAddress(uint8_t main, uint8_t middle, uint8_t sub);
 
     bool individualAnswerAddress();
-    bool individualAnswerMaskVersion(int, int, int);
-    bool individualAnswerAuth(int, int, int, int, int);
+    bool individualAnswerMaskVersion(uint8_t area, uint8_t line, uint8_t member);
+    bool individualAnswerAuth(uint8_t accessLevel, uint8_t sequenceNo, uint8_t area, uint8_t line, uint8_t member);
 
-    void setListenToBroadcasts(bool);
+    void setListenToBroadcasts(bool listen);
 
 
   private:
     Stream* _serialport;
     KnxTelegram* _tg;       // for normal communication
     KnxTelegram* _tg_ptp;   // for PTP sequence confirmation
-    int _source_area;
-    int _source_line;
-    int _source_member;
-    int _listen_group_addresses[MAX_LISTEN_GROUP_ADDRESSES][3];
-    int _listen_group_address_count;
+    uint8_t _source_area;
+    uint8_t _source_line;
+    uint8_t _source_member;
+    uint8_t _listen_group_addresses[MAX_LISTEN_GROUP_ADDRESSES][3];
+    uint8_t _listen_group_address_count;
     bool _listen_to_broadcasts;
 
-    bool isKNXControlByte(int);
+    bool isKNXControlByte(uint8_t b);
     void checkErrors();
-    void printByte(int);
+    void printByte(uint8_t incomingByte);
     bool readKNXTelegram();
-    void createKNXMessageFrame(int, KnxCommandType, String, int);
-    void createKNXMessageFrameIndividual(int, KnxCommandType, String, int);
+    void createKNXMessageFrame(uint8_t payloadlength, KnxCommandType command, String address, uint8_t firstDataByte);
+    void createKNXMessageFrameIndividual(uint8_t payloadlength, KnxCommandType command, String address, uint8_t firstDataByte);
     bool sendMessage();
-    bool sendNCDPosConfirm(int, int, int, int);
-    int serialRead();
+    bool sendNCDPosConfirm(uint8_t sequenceNo, uint8_t area, uint8_t line, uint8_t member);
+    uint8_t serialRead();
 };
 
 #endif
