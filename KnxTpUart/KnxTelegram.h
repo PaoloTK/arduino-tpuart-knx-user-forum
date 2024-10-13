@@ -104,7 +104,7 @@ class KnxTelegram {
     uint8_t get1ByteIntValue();
 
     void set2ByteIntValue(uint16_t value);
-    uint8_t get2ByteIntValue();
+    uint16_t get2ByteIntValue();
     void set2ByteFloatValue(float value);
     float get2ByteFloatValue();
 
