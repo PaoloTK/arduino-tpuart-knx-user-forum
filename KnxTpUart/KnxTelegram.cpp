@@ -352,7 +352,7 @@ void KnxTelegram::set2ByteFloatValue(float value) {
   setPayloadLength(4);
   // @FIX understand and see if float math can be removed
   float v = value * 100.0f;
-  int exponent = 0;
+  uint8_t exponent = 0;
   for (; v < -2048.0f; v /= 2) exponent++;
   for (; v > 2047.0f; v /= 2) exponent++;
   long m = (int)round(v) & 0x7FF;
@@ -368,7 +368,7 @@ float KnxTelegram::get2ByteFloatValue() {
     return 0;
   }
   // @FIX Same as above
-  int exponent = (buffer[8] & 0b01111000) >> 3;
+  uint8_t exponent = (buffer[8] & 0b01111000) >> 3;
   int mantissa = ((buffer[8] & 0b00000111) << 8) | (buffer[9]);
 
   if (buffer[8] & 0b10000000) {

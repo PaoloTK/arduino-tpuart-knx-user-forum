@@ -44,7 +44,7 @@ KnxTpUartSerialEventType KnxTpUart::serialEvent() {
   while (_serialport->available() > 0) {
     checkErrors();
 
-    int incomingByte = _serialport->peek();
+    uint8_t incomingByte = _serialport->peek();
     printByte(incomingByte);
 
     if (isKNXControlByte(incomingByte)) {
@@ -409,7 +409,7 @@ bool KnxTpUart::sendNCDPosConfirm(uint8_t sequenceNo, uint8_t area, uint8_t line
   _tg_ptp->createChecksum();
 
 
-  int messageSize = _tg_ptp->getTotalLength();
+  uint8_t messageSize = _tg_ptp->getTotalLength();
 
   uint8_t sendbuf[2];
   for (int i = 0; i < messageSize; i++) {
@@ -427,7 +427,7 @@ bool KnxTpUart::sendNCDPosConfirm(uint8_t sequenceNo, uint8_t area, uint8_t line
   }
 
 
-  int confirmation;
+  uint8_t confirmation;
   while (true) {
     confirmation = serialRead();
     if (confirmation == 0b10001011) {
