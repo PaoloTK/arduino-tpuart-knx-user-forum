@@ -130,11 +130,14 @@ uint8_t KnxTelegram::getRoutingCounter() {
 }
 
 void KnxTelegram::setPayloadLength(uint8_t length) {
+  // Max length 16 bytes, 0-indexed
+  length = (length - 1) & 0b00001111;
   buffer[5] = buffer[5] & 0b11110000;
-  buffer[5] = buffer[5] | (length - 1); // @FIX limit length to 16 bit
+  buffer[5] = buffer[5] | length;
 }
 
 uint8_t KnxTelegram::getPayloadLength() {
+  // length is 0-indexed
   uint8_t length = (buffer[5] & 0b00001111) + 1;
   return length;
 }
@@ -342,7 +345,6 @@ uint16_t KnxTelegram::get2ByteIntValue() {
     // Wrong payload length
     return 0;
   }
-  // @FIX Verify if originally uint8_t was used
   uint16_t value = uint8_t(buffer[8] << 8) + uint8_t(buffer[9]);
 
   return (value);
@@ -350,16 +352,21 @@ uint16_t KnxTelegram::get2ByteIntValue() {
 
 void KnxTelegram::set2ByteFloatValue(float value) {
   setPayloadLength(4);
-  // @FIX understand and see if float math can be removed
-  float v = value * 100.0f;
+  uint32_t integerValue = value * 100;
+  uint32_t absoluteValue = integerValue < 0 ? -integerValue : integerValue;
+
   uint8_t exponent = 0;
-  for (; v < -2048.0f; v /= 2) exponent++;
-  for (; v > 2047.0f; v /= 2) exponent++;
-  long m = (int)round(v) & 0x7FF;
-  short msb = (short) (exponent << 3 | m >> 8);
-  if (value < 0.0f) msb |= 0x80;
+  // Shift until normalized
+  while (absoluteValue > 2047) {
+    absoluteValue >>= 1;
+    exponent++;
+  }
+
+  int16_t mantissa = absoluteValue & 0x7FF; // Mantissa is 11 bits
+  uint8_t msb = = (exponent << 3) | (mantissa >> 8); // Pack exponent and top 3 bits of mantissa
+  if (integerValue < 0) msb |= 0x80; // Set the sign bit if negative
   buffer[8] = msb;
-  buffer[9] = (byte)m;
+  buffer[9] = uint8_t(mantissa & 0xFF); // Lower 8 bits of the mantissa
 }
 
 float KnxTelegram::get2ByteFloatValue() {
@@ -367,15 +374,20 @@ float KnxTelegram::get2ByteFloatValue() {
     // Wrong payload length
     return 0;
   }
-  // @FIX Same as above
   uint8_t exponent = (buffer[8] & 0b01111000) >> 3;
-  int mantissa = ((buffer[8] & 0b00000111) << 8) | (buffer[9]);
+  int16_t mantissa = ((buffer[8] & 0b00000111) << 8) | (buffer[9]);
 
+  // Check sign bit and convert to signed integer
   if (buffer[8] & 0b10000000) {
-    return ((-2048 + mantissa) * 0.01) * pow(2.0, exponent); // Thanks to Rouven Raudzus for the note
+    mantissa |= 0xF800; // Sign-extend the 11-bit mantissa to a 16-bit signed integer
   }
 
-  return (mantissa * 0.01) * pow(2.0, exponent);
+  // Adjust mantissa by exponent using bit-shifting
+  int32_t value = mantissa;
+  value <<= exponent; // Multiply by 2^exponent using left shift
+
+  // Scale down to restore the original float value
+  return value * 0.01f;
 }
 
 void KnxTelegram::set3ByteTime(uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t second) {
