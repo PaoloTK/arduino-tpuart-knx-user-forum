@@ -44,7 +44,7 @@ KnxTpUartSerialEventType KnxTpUart::serialEvent() {
   while (_serialport->available() > 0) {
     checkErrors();
 
-    uint8_t incomingByte = _serialport->peek();
+    byte incomingByte = _serialport->peek();
     printByte(incomingByte);
 
     if (isKNXControlByte(incomingByte)) {
@@ -84,7 +84,7 @@ KnxTpUartSerialEventType KnxTpUart::serialEvent() {
 }
 
 
-bool KnxTpUart::isKNXControlByte(uint8_t b) {
+bool KnxTpUart::isKNXControlByte(byte b) {
   return ( (b | 0b00101100) == 0b10111100 ); // Ignore repeat flag and priority flag
 }
 
@@ -122,7 +122,7 @@ void KnxTpUart::checkErrors() {
 #endif
 }
 
-void KnxTpUart::printByte(uint8_t incomingByte) {
+void KnxTpUart::printByte(byte incomingByte) {
 #if defined(TPUART_DEBUG)
   TPUART_DEBUG_PORT.print("Incoming Byte: ");
   TPUART_DEBUG_PORT.print(incomingByte, DEC);
@@ -230,7 +230,7 @@ bool KnxTpUart::groupWrite4BitDim(String Address, bool direction, byte steps) {
   return sendMessage();
 }
 
-bool KnxTpUart::groupWrite1ByteInt(String Address, uint8_t value) {
+bool KnxTpUart::groupWrite1ByteInt(String Address, byte value) {
   createKNXMessageFrame(2, KNX_COMMAND_WRITE, Address, 0);
   _tg->set1ByteIntValue(value);
   _tg->createChecksum();
@@ -291,7 +291,7 @@ bool KnxTpUart::groupAnswerBool(String Address, bool value) {
   return sendMessage();
 }
 
-bool KnxTpUart::groupAnswer1ByteInt(String Address, uint8_t value) {
+bool KnxTpUart::groupAnswer1ByteInt(String Address, byte value) {
   createKNXMessageFrame(2, KNX_COMMAND_ANSWER, Address, 0);
   _tg->set1ByteIntValue(value);
   _tg->createChecksum();
@@ -372,7 +372,7 @@ bool KnxTpUart::individualAnswerAuth(uint8_t accessLevel, uint8_t sequenceNo, ui
   return sendMessage();
 }
 
-void KnxTpUart::createKNXMessageFrame(uint8_t payloadlength, KnxCommandType command, String address, uint8_t firstDataByte) {
+void KnxTpUart::createKNXMessageFrame(uint8_t payloadlength, KnxCommandType command, String address, byte firstDataByte) {
   uint8_t mainGroup = address.substring(0, address.indexOf('/')).toInt();
   uint8_t middleGroup = address.substring(address.indexOf('/') + 1, address.length()).substring(0, address.substring(address.indexOf('/') + 1, address.length()).indexOf('/')).toInt();
   uint8_t subGroup = address.substring(address.lastIndexOf('/') + 1, address.length()).toInt();
@@ -385,7 +385,7 @@ void KnxTpUart::createKNXMessageFrame(uint8_t payloadlength, KnxCommandType comm
   _tg->createChecksum();
 }
 
-void KnxTpUart::createKNXMessageFrameIndividual(uint8_t payloadlength, KnxCommandType command, String address, uint8_t firstDataByte) {
+void KnxTpUart::createKNXMessageFrameIndividual(uint8_t payloadlength, KnxCommandType command, String address, byte firstDataByte) {
   uint8_t area = address.substring(0, address.indexOf('/')).toInt();
   uint8_t line = address.substring(address.indexOf('/') + 1, address.length()).substring(0, address.substring(address.indexOf('/') + 1, address.length()).indexOf('/')).toInt();
   uint8_t member = address.substring(address.lastIndexOf('/') + 1, address.length()).toInt();
