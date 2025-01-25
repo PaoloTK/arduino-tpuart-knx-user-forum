@@ -25,12 +25,12 @@ void KnxTpUart::setListenToBroadcasts(bool listen) {
 }
 
 void KnxTpUart::uartReset() {
-  byte sendByte = 0x01;
+  uint8_t sendByte = 0x01;
   _serialport->write(sendByte);
 }
 
 void KnxTpUart::uartStateRequest() {
-  byte sendByte = 0x02;
+  uint8_t sendByte = 0x02;
   _serialport->write(sendByte);
 }
 
@@ -44,7 +44,7 @@ KnxTpUartSerialEventType KnxTpUart::serialEvent() {
   while (_serialport->available() > 0) {
     checkErrors();
 
-    byte incomingByte = _serialport->peek();
+    uint8_t incomingByte = _serialport->peek();
     printByte(incomingByte);
 
     if (isKNXControlByte(incomingByte)) {
@@ -84,7 +84,7 @@ KnxTpUartSerialEventType KnxTpUart::serialEvent() {
 }
 
 
-bool KnxTpUart::isKNXControlByte(byte b) {
+bool KnxTpUart::isKNXControlByte(uint8_t b) {
   return ( (b | 0b00101100) == 0b10111100 ); // Ignore repeat flag and priority flag
 }
 
@@ -122,7 +122,7 @@ void KnxTpUart::checkErrors() {
 #endif
 }
 
-void KnxTpUart::printByte(byte incomingByte) {
+void KnxTpUart::printByte(uint8_t incomingByte) {
 #if defined(TPUART_DEBUG)
   TPUART_DEBUG_PORT.print("Incoming Byte: ");
   TPUART_DEBUG_PORT.print(incomingByte, DEC);
@@ -220,7 +220,7 @@ bool KnxTpUart::groupWrite4BitInt(String Address, uint8_t value) {
   return sendMessage();
 }
 
-bool KnxTpUart::groupWrite4BitDim(String Address, bool direction, byte steps) {
+bool KnxTpUart::groupWrite4BitDim(String Address, bool direction, uint8_t steps) {
   uint8_t value = 0;
   if (direction || steps) {
     value = (direction << 3) + (steps & 0b00000111);
@@ -230,7 +230,7 @@ bool KnxTpUart::groupWrite4BitDim(String Address, bool direction, byte steps) {
   return sendMessage();
 }
 
-bool KnxTpUart::groupWrite1ByteInt(String Address, byte value) {
+bool KnxTpUart::groupWrite1ByteInt(String Address, uint8_t value) {
   createKNXMessageFrame(2, KNX_COMMAND_WRITE, Address, 0);
   _tg->set1ByteIntValue(value);
   _tg->createChecksum();
@@ -291,7 +291,7 @@ bool KnxTpUart::groupAnswerBool(String Address, bool value) {
   return sendMessage();
 }
 
-bool KnxTpUart::groupAnswer1ByteInt(String Address, byte value) {
+bool KnxTpUart::groupAnswer1ByteInt(String Address, uint8_t value) {
   createKNXMessageFrame(2, KNX_COMMAND_ANSWER, Address, 0);
   _tg->set1ByteIntValue(value);
   _tg->createChecksum();
@@ -372,7 +372,7 @@ bool KnxTpUart::individualAnswerAuth(uint8_t accessLevel, uint8_t sequenceNo, ui
   return sendMessage();
 }
 
-void KnxTpUart::createKNXMessageFrame(uint8_t payloadlength, KnxCommandType command, String address, byte firstDataByte) {
+void KnxTpUart::createKNXMessageFrame(uint8_t payloadlength, KnxCommandType command, String address, uint8_t firstDataByte) {
   uint8_t mainGroup = address.substring(0, address.indexOf('/')).toInt();
   uint8_t middleGroup = address.substring(address.indexOf('/') + 1, address.length()).substring(0, address.substring(address.indexOf('/') + 1, address.length()).indexOf('/')).toInt();
   uint8_t subGroup = address.substring(address.lastIndexOf('/') + 1, address.length()).toInt();
@@ -385,7 +385,7 @@ void KnxTpUart::createKNXMessageFrame(uint8_t payloadlength, KnxCommandType comm
   _tg->createChecksum();
 }
 
-void KnxTpUart::createKNXMessageFrameIndividual(uint8_t payloadlength, KnxCommandType command, String address, byte firstDataByte) {
+void KnxTpUart::createKNXMessageFrameIndividual(uint8_t payloadlength, KnxCommandType command, String address, uint8_t firstDataByte) {
   uint8_t area = address.substring(0, address.indexOf('/')).toInt();
   uint8_t line = address.substring(address.indexOf('/') + 1, address.length()).substring(0, address.substring(address.indexOf('/') + 1, address.length()).indexOf('/')).toInt();
   uint8_t member = address.substring(address.lastIndexOf('/') + 1, address.length()).toInt();
@@ -486,13 +486,13 @@ bool KnxTpUart::sendMessage() {
 }
 
 void KnxTpUart::sendAck() {
-  byte sendByte = 0b00010001;
+  uint8_t sendByte = 0b00010001;
   _serialport->write(sendByte);
   delay(SERIAL_WRITE_DELAY_MS);
 }
 
 void KnxTpUart::sendNotAddressed() {
-  byte sendByte = 0b00010000;
+  uint8_t sendByte = 0b00010000;
   _serialport->write(sendByte);
   delay(SERIAL_WRITE_DELAY_MS);
 }

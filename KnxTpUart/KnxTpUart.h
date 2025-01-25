@@ -64,8 +64,8 @@ class KnxTpUart {
 
     bool groupWriteBool(String Address, bool value);
     bool groupWrite4BitInt(String Address, uint8_t value);
-    bool groupWrite4BitDim(String Address, bool direction, byte steps);
-    bool groupWrite1ByteInt(String Address, byte value);
+    bool groupWrite4BitDim(String Address, bool direction, uint8_t steps);
+    bool groupWrite1ByteInt(String Address, uint8_t value);
     bool groupWrite2ByteInt(String Address, uint16_t value);
     bool groupWrite2ByteFloat(String Address, float value);
     bool groupWrite3ByteTime(String Address, uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t second);
@@ -74,7 +74,7 @@ class KnxTpUart {
     bool groupWrite14ByteText(String Address, String value);
 
     bool groupAnswerBool(String Address, bool value);
-    bool groupAnswer1ByteInt(String Address, byte value);
+    bool groupAnswer1ByteInt(String Address, uint8_t value);
     bool groupAnswer2ByteInt(String Address, uint16_t value);
     bool groupAnswer2ByteFloat(String Address, float value);
     bool groupAnswer3ByteTime(String Address, uint8_t weekday, uint8_t hour, uint8_t minute, uint8_t second);
@@ -105,12 +105,12 @@ class KnxTpUart {
     uint8_t _listen_group_address_count;
     bool _listen_to_broadcasts;
 
-    bool isKNXControlByte(byte b);
+    bool isKNXControlByte(uint8_t b);
     void checkErrors();
-    void printByte(byte incomingByte);
+    void printByte(uint8_t incomingByte);
     bool readKNXTelegram();
-    void createKNXMessageFrame(uint8_t payloadlength, KnxCommandType command, String address, byte firstDataByte);
-    void createKNXMessageFrameIndividual(uint8_t payloadlength, KnxCommandType command, String address, byte firstDataByte);
+    void createKNXMessageFrame(uint8_t payloadlength, KnxCommandType command, String address, uint8_t firstDataByte);
+    void createKNXMessageFrameIndividual(uint8_t payloadlength, KnxCommandType command, String address, uint8_t firstDataByte);
     bool sendMessage();
     bool sendNCDPosConfirm(uint8_t sequenceNo, uint8_t area, uint8_t line, uint8_t member);
     uint8_t serialRead();

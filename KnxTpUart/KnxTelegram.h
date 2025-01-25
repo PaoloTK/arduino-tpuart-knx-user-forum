@@ -66,8 +66,8 @@ class KnxTelegram {
     KnxTelegram();
 
     void clear();
-    void setBufferByte(uint8_t index, byte content);
-    byte getBufferByte(uint8_t index);
+    void setBufferByte(uint8_t index, uint8_t content);
+    uint8_t getBufferByte(uint8_t index);
     void setPayloadLength(uint8_t length);
     uint8_t getPayloadLength();
     void setRepeated(bool repeat);
@@ -92,16 +92,16 @@ class KnxTelegram {
     void setCommand(KnxCommandType command);
     KnxCommandType getCommand();
 
-    void setFirstDataByte(byte data);
-    byte getFirstDataByte();
+    void setFirstDataByte(uint8_t data);
+    uint8_t getFirstDataByte();
     bool getBool();
 
     uint8_t get4BitIntValue();
     bool get4BitDirectionValue();
     uint8_t get4BitStepsValue();
 
-    void set1ByteIntValue(byte value);
-    byte get1ByteIntValue();
+    void set1ByteIntValue(uint8_t value);
+    uint8_t get1ByteIntValue();
 
     void set2ByteIntValue(uint16_t value);
     uint16_t get2ByteIntValue();
