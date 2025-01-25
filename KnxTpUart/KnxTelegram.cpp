@@ -352,21 +352,27 @@ uint16_t KnxTelegram::get2ByteIntValue() {
 
 void KnxTelegram::set2ByteFloatValue(float value) {
   setPayloadLength(4);
-  uint32_t integerValue = value * 100;
-  uint32_t absoluteValue = integerValue < 0 ? -integerValue : integerValue;
 
+  // Scale the float by 100 to keep 2 digits precision
+  int32_t scaled = round(value * 100.0f);
+
+  // Determine exponent by right-shifting
+  // 11 bits mantissa, 4 bits exponent
   uint8_t exponent = 0;
-  // Shift until normalized
-  while (absoluteValue > 2047) {
-    absoluteValue >>= 1;
+  while ((scaled > 2047 || scaled < -2048) && exponent < 15) {
+    scaled >>= 1;
     exponent++;
   }
 
-  int16_t mantissa = absoluteValue & 0x7FF; // Mantissa is 11 bits
-  uint8_t msb = = (exponent << 3) | (mantissa >> 8); // Pack exponent and top 3 bits of mantissa
-  if (integerValue < 0) msb |= 0x80; // Set the sign bit if negative
-  buffer[8] = msb;
-  buffer[9] = uint8_t(mantissa & 0xFF); // Lower 8 bits of the mantissa
+  // Mask in case number is negative for two's complement
+  uint16_t mantissa = scaled & 0x07FF;
+
+  bool sign = (scaled < 0);
+
+  // S EEEE MMM
+  buffer[8] = (sign << 7) | (exponent << 3) | (mantissa >> 8);
+  // MMMM MMMM
+  buffer[9] = mantissa & 0xFF;
 }
 
 float KnxTelegram::get2ByteFloatValue() {
