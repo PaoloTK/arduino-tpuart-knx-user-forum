@@ -262,7 +262,6 @@ void KnxTelegram::print(TPUART_SERIAL_CLASS* serial) {
 uint8_t KnxTelegram::calculateChecksum() {
   uint8_t bcc = 0xFF;
   uint8_t size = getPayloadLength() + KNX_TELEGRAM_HEADER_SIZE;
-  // @FIX Test unsigned vs int vs uint8_t
   for (unsigned i = 0; i < size; i++) {
     bcc ^= buffer[i];
   }
